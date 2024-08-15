@@ -3,7 +3,6 @@
  *
  */
 
-extern char **environ;
 int main(void)
 {
 	char *line = NULL;
@@ -13,10 +12,12 @@ int main(void)
 	char **argv;
 	pid_t child;
 	int status;
+	int _isatty = isatty(STDIN_FILENO);
 
 	while (1)
 	{
-		printf("$ ");
+		if (_isatty)
+			printf("$ ");
 		read = getline(&line, &len, stdin);
 		argv = token(line);
 		pathname = argv[0];
