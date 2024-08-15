@@ -5,4 +5,5 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+char **token(char *command);
 #endif

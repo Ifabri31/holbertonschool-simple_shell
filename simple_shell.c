@@ -2,13 +2,15 @@
 /**
  *
  */
+
+extern char **environ;
 int main(void)
 {
 	char *line = NULL;
 	size_t len = 0;
 	ssize_t read;
-	const char *pathname = "/bin/ls";
-	char *const argv[] = {"ls", NULL};
+	char *pathname;
+	char **argv;
 	pid_t child;
 	int status;
 
@@ -16,6 +18,8 @@ int main(void)
 	{
 		printf("$ ");
 		read = getline(&line, &len, stdin);
+		argv = token(line);
+		pathname = argv[0];
 		child = fork();
 		if (child == -1)
                 {
