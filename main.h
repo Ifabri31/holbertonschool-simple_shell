@@ -6,4 +6,5 @@
 #include <unistd.h>
 #include <sys/wait.h>
 char **token(char *command);
+char *command_in_path(const char *command);
 #endif

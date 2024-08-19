@@ -51,6 +51,7 @@ int main(void)
 	char **argv;
 	pid_t child;
 	int _isatty = isatty(STDIN_FILENO);
+	char *command_path;
 
 	while (1)
 	{
@@ -68,6 +69,9 @@ int main(void)
 			free(argv);
 			break;
 		}
+		command_path = command_in_path(argv[0]);
+		if (command_path == NULL)
+			break;
 		child = fork();
 		if (child < 0)
                 {
@@ -75,17 +79,21 @@ int main(void)
 			free(line);
 			return(-1);
                 }
-		else if (child > 0)
-			wait(&child);
-		else
+		else if (child == 0)
 		{
-			if (execve(argv[0], argv, NULL) == -1)
+			if (execve(command_path, argv, NULL) == -1)
 			{
 				printf("./hsh: No such file or directory\n");
-				return (1);
+				return(1);
+			}
+			else
+			{
+				execve(argv[0], argv, NULL);
+				printf("./hsh: No such file or directory\n");
+				return(-1);
 			}
 		}
-
+		else
 			wait(&child);
 		free(argv);
 	}
