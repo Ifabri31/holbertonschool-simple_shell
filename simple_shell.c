@@ -2,6 +2,12 @@
 
 #define DELIM " \t\n"
 
+/**
+ * count_tok - contador de tokens para memoria
+ * line: linea para tokenizar
+ *
+ * Return: cantidad de tokens
+ */
 char count_tok(char *line)
 {
 	int count = 0;
@@ -13,9 +19,15 @@ char count_tok(char *line)
 		count++;
 		token = strtok(NULL, DELIM);
 	}
-	return(count);
+	return (count);
 }
 
+/**
+ * tokenizar - ahora si tokenizamos la entrada
+ * command: commandos a tokenizar
+ *
+ * Return: un array de argumentos
+ */
 char **tokenizar(char *command)
 {
 	int i = 0;
@@ -26,7 +38,9 @@ char **tokenizar(char *command)
 
 	copy = strdup(command);
 	num_tok = count_tok(command);
-	args = malloc((num_tok + 1) * sizeof(char*));
+	if (num_tok == 0)
+		return (NULL);
+	args = malloc((num_tok + 1) * sizeof(char *));
 	if (!args)
 	{
 		free(args);
@@ -40,9 +54,14 @@ char **tokenizar(char *command)
 		i++;
 	}
 	args[i] = NULL;
-	return(args);
+	return (args);
 }
 
+/**
+ * main - the program
+ *
+ * Return: 0 on success
+ */
 int main(void)
 {
 	char *line = NULL;
@@ -50,8 +69,10 @@ int main(void)
 	ssize_t read;
 	char **argv;
 	pid_t child;
+	int status;
 	int _isatty = isatty(STDIN_FILENO);
 	char *command_path;
+	char *envp[] = { "PATH=/usr/bin:/bin", NULL};
 
 	while (1)
 	{
@@ -60,43 +81,45 @@ int main(void)
 		read = getline(&line, &len, stdin);
 		if (read == -1)
 		{
-			return(-1);
-			break;
+			if (feof(stdin))
+			{
+				free(line);
+				break;
+			}
+			free(line);
+			return (-1);
 		}
 		argv = tokenizar(line);
 		if (argv == NULL)
 		{
 			free(argv);
-			break;
+			continue;
 		}
 		command_path = command_in_path(argv[0]);
 		if (command_path == NULL)
-			break;
+		{
+			free(argv);
+			continue;
+		}
 		child = fork();
 		if (child < 0)
-                {
+		{
 			free(argv);
 			free(line);
-			return(-1);
-                }
+			return (-1);
+		}
 		else if (child == 0)
 		{
-			if (execve(command_path, argv, NULL) == -1)
+			if (execve(command_path, argv, envp) == -1)
 			{
-				printf("./hsh: No such file or directory\n");
-				return(1);
-			}
-			else
-			{
-				execve(argv[0], argv, NULL);
-				printf("./hsh: No such file or directory\n");
-				return(-1);
+				perror("execve");
+				_exit(EXIT_FAILURE);
 			}
 		}
 		else
-			wait(&child);
+			wait(&status);
 		free(argv);
 	}
 	free(line);
-	return(0);
+	return (0);
 }
