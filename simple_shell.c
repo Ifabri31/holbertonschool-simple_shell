@@ -81,11 +81,6 @@ int main(void)
 		read = getline(&line, &len, stdin);
 		if (read == -1)
 		{
-			if (feof(stdin))
-			{
-				free(line);
-				break;
-			}
 			free(line);
 			return (-1);
 		}
