@@ -64,15 +64,12 @@ char **tokenizar(char *command)
  */
 int main(void)
 {
-	char *line = NULL;
+	char *line = NULL, *command_path, *envp[] = { "PATH=/usr/bin:/bin", NULL};
 	size_t len = 0;
 	ssize_t read;
 	char **argv;
 	pid_t child;
-	int status;
-	int _isatty = isatty(STDIN_FILENO);
-	char *command_path;
-	char *envp[] = { "PATH=/usr/bin:/bin", NULL};
+	int status, _isatty = isatty(STDIN_FILENO);
 
 	while (1)
 	{

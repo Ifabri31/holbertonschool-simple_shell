@@ -21,9 +21,9 @@
         <li><code>wait</code>: This call makes the parent process wait until all of its child processes have finished executing. It ensures that the parent process only continues once the child process has completed.</li>
     </ul>
     <p>To compile our program we use the following code:</p>
-    
+
  <li><code>gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh</li</code>
-   
+
    <p>This program is not completely finished yet, we need to create our getenv function, free memory, and solve possible errors in the terminal</p>
 
     <h2>Authors:</h2>
