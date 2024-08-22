@@ -4,12 +4,14 @@
  * @command: Command
  * Return: null
  */
-char *command_in_path(const char *command)
+char *command_in_path(char *command)
 {
 	char *path_env = getenv("PATH");
 	char *path, *token, *command_path;
 	int command_length, path_length;
 
+	if (access(command, X_OK) != -1)
+		return (command);
 	if (!path_env)
 		return (NULL);
 

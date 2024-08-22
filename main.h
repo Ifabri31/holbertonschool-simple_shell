@@ -5,5 +5,5 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
-char *command_in_path(const char *command);
+char *command_in_path(char *command);
 #endif

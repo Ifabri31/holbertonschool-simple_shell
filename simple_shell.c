@@ -37,7 +37,10 @@ char **tokenizar(char *command)
 	copy = strdup(command);
 	num_tok = count_tok(command);
 	if (num_tok == 0)
+	{
+		free(copy);
 		return (NULL);
+	}
 	args = malloc((num_tok + 1) * sizeof(char *));
 	if (!args)
 	{
