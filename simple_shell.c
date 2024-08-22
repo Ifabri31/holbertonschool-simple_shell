@@ -125,8 +125,11 @@ int main(void)
 			return (-1);
 		}
 
-		if (execute_command(line, envp) == -1)
-			continue
+		if (line[read - 1] == '\n')
+			line[read - 1] = '\0';
+
+		if (command_in_shell(line, envp) == -1)
+			continue;
 
 	}
 	free(line);
