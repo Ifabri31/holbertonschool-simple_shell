@@ -1,7 +1,7 @@
 #include"main.h"
 /**
- * command_in_path - Busca el comando dentro de path
- * @command: Comando que se ingresa
+ * command_in_path - look for the command in path
+ * @command: Command
  * Return: null
  */
 char *command_in_path(const char *command)

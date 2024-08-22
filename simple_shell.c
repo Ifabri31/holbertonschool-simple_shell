@@ -1,12 +1,11 @@
 #include "main.h"
 
-#define DELIM " \t\n"
+#define DELIM " \t\n\r"
 
 /**
- * count_tok - contador de tokens para memoria
- * line: linea para tokenizar
- *
- * Return: cantidad de tokens
+ * count_tok - count tokens
+ * @line: line to tokenize
+ * Return: number of tokens
  */
 char count_tok(char *line)
 {
@@ -23,10 +22,9 @@ char count_tok(char *line)
 }
 
 /**
- * tokenizar - ahora si tokenizamos la entrada
- * command: commandos a tokenizar
- *
- * Return: un array de argumentos
+ * tokenizar - now if we tokenize the input
+ * @command: commands to tokenize
+ * Return: an array of arguments
  */
 char **tokenizar(char *command)
 {
@@ -58,59 +56,78 @@ char **tokenizar(char *command)
 }
 
 /**
+ * command_in_shell - execute the commands in shell
+ * @line: input command line
+ * @envp: Environment variables
+ * Return: 0
+ */
+int command_in_shell(char *line, char **envp)
+{
+	char *command_path, **argv;
+	pid_t child;
+	int status;
+
+	argv = tokenizar(line);
+	if (argv == NULL)
+		return (-1);
+
+	command_path = command_in_path(argv[0]);
+	if (command_path == NULL)
+	{
+		free(argv);
+		return (-1);
+	}
+
+	child = fork();
+	if (child < 0)
+	{
+		free(argv);
+		free(command_path);
+		return (-1);
+	}
+	else if (child == 0)
+	{
+		if (execve(command_path, argv, envp) == -1)
+		{
+			perror("execve");
+			_exit(EXIT_FAILURE);
+		}
+	}
+	else
+		wait(&status);
+
+	free(argv);
+	free(command_path);
+	return (0);
+}
+
+/**
  * main - the program
- *
  * Return: 0 on success
  */
 int main(void)
 {
-	char *line = NULL, *command_path, *envp[] = { "PATH=/usr/bin:/bin", NULL};
+	char *line = NULL, *envp[] = { "PATH=/usr/bin:/bin", NULL};
 	size_t len = 0;
 	ssize_t read;
-	char **argv;
-	pid_t child;
-	int status, _isatty = isatty(STDIN_FILENO);
+	int _isatty = isatty(STDIN_FILENO);
 
 	while (1)
 	{
 		if (_isatty)
 			printf("$ ");
+
 		read = getline(&line, &len, stdin);
+
 		if (read == -1)
 		{
 			free(line);
 			return (-1);
 		}
-		argv = tokenizar(line);
-		if (argv == NULL)
-		{
-			free(argv);
-			continue;
-		}
-		command_path = command_in_path(argv[0]);
-		if (command_path == NULL)
-		{
-			free(argv);
-			continue;
-		}
-		child = fork();
-		if (child < 0)
-		{
-			free(argv);
-			free(line);
-			return (-1);
-		}
-		else if (child == 0)
-		{
-			if (execve(command_path, argv, envp) == -1)
-			{
-				perror("execve");
-				_exit(EXIT_FAILURE);
-			}
-		}
-		else
-			wait(&status);
-		free(argv);
+
+		if (execute_command(line, envp) == -1)
+			continue
+
 	}
 	free(line);
 	return (0);
