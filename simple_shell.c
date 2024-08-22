@@ -67,13 +67,15 @@ char **tokenizar(char *command)
 	return (args);
 }
 
+extern char **environ;
+
 /**
  * command_in_shell - execute the commands in shell
  * @line: input command line
  * @envp: Environment variables
  * Return: 0
  */
-int command_in_shell(char *line, char **envp)
+int command_in_shell(char *line)
 {
 	char *command_path, **argv;
 	pid_t child;
@@ -99,7 +101,7 @@ int command_in_shell(char *line, char **envp)
 	}
 	else if (child == 0)
 	{
-		if (execve(command_path, argv, envp) == -1)
+		if (execve(command_path, argv, environ) == -1)
 		{
 			perror("execve");
 			_exit(EXIT_FAILURE);
@@ -119,7 +121,7 @@ int command_in_shell(char *line, char **envp)
  */
 int main(void)
 {
-	char *line = NULL, *envp[] = { "PATH=/usr/bin:/bin", NULL};
+	char *line = NULL;
 	size_t len = 0;
 	ssize_t read;
 	int _isatty = isatty(STDIN_FILENO);
@@ -140,8 +142,11 @@ int main(void)
 		if (line[read - 1] == '\n')
 			line[read - 1] = '\0';
 
-		if (command_in_shell(line, envp) == -1)
+		if (command_in_shell(line) == -1)
+		{
+			printf("./hsh: No such file or directory\n");
 			continue;
+		}
 
 	}
 	free(line);
