@@ -1,7 +1,9 @@
 #include"main.h"
+/**
+ *
+ */
 char *_getenv(char *data)
 {
-	extern char **environ;
 	char **env = environ;
 	size_t len_data = strlen(data);
 	size_t len;

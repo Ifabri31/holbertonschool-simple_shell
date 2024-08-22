@@ -5,6 +5,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+extern char **environ;
 char *command_in_path(char *command);
 char *_getenv(char *data);
 char count_tok(char *line);

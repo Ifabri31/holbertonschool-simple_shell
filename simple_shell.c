@@ -67,8 +67,6 @@ char **tokenizar(char *command)
 	return (args);
 }
 
-extern char **environ;
-
 /**
  * command_in_shell - execute the commands in shell
  * @line: input command line
@@ -134,17 +132,14 @@ int main(void)
 		read = getline(&line, &len, stdin);
 
 		if (read == -1)
-		{
-			free(line);
-			return (-1);
-		}
+			break;
 
 		if (line[read - 1] == '\n')
 			line[read - 1] = '\0';
 
 		if (command_in_shell(line) == -1)
 		{
-			printf("./hsh: No such file or directory\n");
+			perror("error");
 			continue;
 		}
 
