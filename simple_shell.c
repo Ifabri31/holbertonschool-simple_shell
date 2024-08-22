@@ -28,7 +28,7 @@ char count_tok(char *line)
  */
 char **tokenizar(char *command)
 {
-	int i = 0;
+	int i = 0, j;
 	int num_tok;
 	char *tok;
 	char **args;
@@ -51,10 +51,19 @@ char **tokenizar(char *command)
 	while (tok != NULL)
 	{
 		args[i] = strdup(tok);
+		if (args[i] == NULL)
+		{
+			for (j = 0; j < i; j++)
+				free(args[j]);
+			free(args);
+			free(copy);
+			return (NULL);
+		}
 		tok = strtok(NULL, DELIM);
 		i++;
 	}
 	args[i] = NULL;
+	free(copy);
 	return (args);
 }
 
