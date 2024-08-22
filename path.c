@@ -1,4 +1,23 @@
 #include"main.h"
+char *_getenv(char *data)
+{
+	extern char **environ;
+	char **env = environ;
+	size_t len_data = strlen(data);
+	size_t len;
+	char *DELIM;
+
+	while (*env)
+	{
+		DELIM = strchr(*env, '=');
+		if (DELIM)
+			len = DELIM - *env;
+		if (len_data == len && strncmp(*env, data, len_data) == 0)
+			return (DELIM + 1);
+		env++;
+	}
+	return (NULL);
+}
 /**
  * command_in_path - look for the command in path
  * @command: Command
@@ -6,7 +25,7 @@
  */
 char *command_in_path(char *command)
 {
-	char *path_env = getenv("PATH");
+	char *path_env = _getenv("PATH");
 	char *path, *token, *command_path;
 	int command_length, path_length;
 
