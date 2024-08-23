@@ -25,7 +25,7 @@ char *_getenv(char *data)
  * @command: Command
  * Return: null
  */
-char *command_in_path(char *command)
+char *command_in_path(char *command, int *flag)
 {
 	char *path_env = _getenv("PATH");
 	char *path, *token, *command_path;
@@ -58,6 +58,7 @@ char *command_in_path(char *command)
 		if (access(command_path, X_OK) != -1)
 		{
 			free(path);
+			*flag = 1;
 			return (command_path);
 		}
 		free(command_path);

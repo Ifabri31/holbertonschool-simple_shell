@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 extern char **environ;
-char *command_in_path(char *command);
+char *command_in_path(char *command, int *flag);
 char *_getenv(char *data);
 char count_tok(char *line);
 char **tokenizar(char *command);

@@ -95,18 +95,20 @@ int command_in_shell(char *line)
 	char *command_path, **argv;
 	pid_t child;
 	int status;
+	int flag  = 0;
 
 	argv = tokenizar(line);
 	if (argv == NULL)
 		return (-1);
 
-	command_path = command_in_path(argv[0]);
+	command_path = command_in_path(argv[0], &flag);
 	if (command_path == NULL)
 	{
 		free_argv(argv);
 		return (-1);
 	}
-	free(argv[0]);
+	if (flag == 1)
+		free(argv[0]);
 	argv[0] = command_path;
 	child = fork();
 	if (child < 0)
@@ -126,9 +128,7 @@ int command_in_shell(char *line)
 	else
 		wait(&status);
 
-	free(argv);
-	if (command_path)
-		free(command_path);
+	free_argv(argv);
 	return (0);
 }
 
