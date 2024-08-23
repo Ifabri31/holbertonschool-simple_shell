@@ -1,6 +1,22 @@
 #include "main.h"
 
 #define DELIM " \t\n\r"
+/**
+ *
+ */
+void free_argv(char **pepe)
+{
+	int i = 0;
+
+	if (pepe == NULL)
+		return;
+	while (pepe[i] != NULL)
+	{
+		free(pepe[i]);
+		i++;
+	}
+	free(pepe);
+}
 
 /**
  * count_tok - count tokens
@@ -28,7 +44,7 @@ char count_tok(char *line)
  */
 char **tokenizar(char *command)
 {
-	int i = 0, j;
+	int i = 0;
 	int num_tok;
 	char *tok;
 	char **args;
@@ -44,6 +60,7 @@ char **tokenizar(char *command)
 	args = malloc((num_tok + 1) * sizeof(char *));
 	if (!args)
 	{
+		free(copy);
 		free(args);
 		return (NULL);
 	}
@@ -53,8 +70,8 @@ char **tokenizar(char *command)
 		args[i] = strdup(tok);
 		if (args[i] == NULL)
 		{
-			for (j = 0; j < i; j++)
-				free(args[j]);
+			for (; i >= 0; i--)
+				free(args[i]);
 			free(args);
 			free(copy);
 			return (NULL);
@@ -86,20 +103,21 @@ int command_in_shell(char *line)
 	command_path = command_in_path(argv[0]);
 	if (command_path == NULL)
 	{
-		free(argv);
+		free_argv(argv);
 		return (-1);
 	}
-
+	free(argv[0]);
+	argv[0] = command_path;
 	child = fork();
 	if (child < 0)
 	{
-		free(argv);
+		free_argv(argv);
 		free(command_path);
 		return (-1);
 	}
 	else if (child == 0)
 	{
-		if (execve(command_path, argv, environ) == -1)
+		if (execve(argv[0], argv, environ) == -1)
 		{
 			perror("execve");
 			_exit(EXIT_FAILURE);
@@ -109,7 +127,8 @@ int command_in_shell(char *line)
 		wait(&status);
 
 	free(argv);
-	free(command_path);
+	if (command_path)
+		free(command_path);
 	return (0);
 }
 
