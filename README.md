@@ -4,7 +4,7 @@
   <p>Below, we will detail these functions, their use, and what they are for.</p>
    <h3>Getline:</h3>
    <p>We use this function to obtain the input read by the user. It takes three arguments, a pointer to pointer to char (where the line of text read will be stored), a pointer to a size (which represents the buffer size), and an FILE object (which represents the input stream).</p>
-   <h3>**Tokenizar:</h3>
+    <h3>Tokenizar:</h3>
    <p>We use this function to indicate which delimiters we should pay attention to when entering a command. Within it, we include functions such as <strong>strtok</strong> and <strong>strdup</strong>, as well as a function created by us to count the number of delimiters that may be present.</p>
    <p>The <strong>strtok</strong> function is used to split a string into tokens based on the delimiters you specify. It works by finding a delimiter and inserting a null character ('\0') at the end of the current token. To get the next token, you need to call <strong>strtok</strong> with 'NULL' as the first argument, so it continues searching for delimiters where the last null character was placed</p>
    <p>The <strong>strdup</strong> function duplicates the given string. This is necessary because the original string is modified by <strong>strtok</strong> by inserting null characters at each delimiter, thus breaking the original string into separate tokens.</p>
@@ -22,10 +22,17 @@
     </ul>
     <p>To compile our program we use the following code:</p>
 
- <li><code>gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh</li</code>
-
+ ```
+ gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
+```
    <p>This program is not completely finished yet, we need to create our getenv function, free memory, and solve possible errors in the terminal</p>
+    
 
-    <h2>Authors:</h2>
-    <p>Mauricio Urroz  <a href="https://github.com/Mauriciourrozz" target="_blank"></p>
-    <p>Fabrizzio Oviedo <a href="https://github.com/Ifabri31" target="_blank"></p>
+</p>Authors:</p>
+<p>Mauricio Urroz https://github.com/Mauriciourrozz</p>
+<p>Fabrizzio Oviedo https://github.com/Ifabri31</p>
+
+
+
+
+<p>Saludoscapeynachojeje</p>
